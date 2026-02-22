@@ -116,15 +116,15 @@ def parse_and_generate_csv(input_file="webpage_content.txt", output_csv="transcr
                     date = ""
                     if j + 2 < len(lines) and lines[j+1] == '●':
                         date = lines[j+2].strip()
-                    data_from_page.append({'Page': page_num, 'Transcript Text': text, 'Date': date, 'Link': link})
+                    data_from_page.append({'Page': page_num, 'Transcript': text, 'Date': date, 'Link': link})
                     
         all_data.extend(data_from_page)
-        if data_from_page:
-            print(f"Found {len(data_from_page)} transcripts on page {page_num}.")
+        if not data_from_page:
+            print(f"Found 0 transcripts on page {page_num}.")
 
     if all_data:
         with open(output_csv, "w", newline='', encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=["Page", "Transcript Text", "Date", "Link"])
+            writer = csv.DictWriter(f, fieldnames=["Page", "Transcript", "Date", "Link"])
             writer.writeheader()
             writer.writerows(all_data)
         print(f"\nAll pages processed. Total {len(all_data)} transcripts saved to {output_csv}")
