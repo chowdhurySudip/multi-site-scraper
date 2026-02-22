@@ -108,28 +108,31 @@ def parse_and_generate_csv(input_file="webpage_content.txt", output_csv="transcr
         
         data_from_page = []
         for j, line in enumerate(lines):
-            if ' Transcript [' in line:
-                match = re.match(r'^(.*?)\s*\[(.*?)\]$', line)
-                if match:
-                    text = match.group(1).strip()
-                    link = match.group(2).strip()
+            match = re.match(r'^(.*?)\s*\[(.*?)\]$', line)
+            if match:
+                text = match.group(1).strip()
+                link = match.group(2).strip()
+                
+                if link.startswith('https://alphastreet.com/india/') and '/category/' not in link and len(link) > len('https://alphastreet.com/india/'):
                     date = ""
-                    if j + 2 < len(lines) and lines[j+1] == '●':
+                    if j + 2 < len(lines) and lines[j+1].strip() == '●':
                         date = lines[j+2].strip()
-                    data_from_page.append({'Page': page_num, 'Transcript': text, 'Date': date, 'Link': link})
+                    
+                    article_type = 'Transcript' if 'transcript' in text.lower() else 'Article'
+                    data_from_page.append({'Page': page_num, 'Transcript': text, 'Date': date, 'Link': link, 'Type': article_type})
                     
         all_data.extend(data_from_page)
         if not data_from_page:
-            print(f"Found 0 transcripts on page {page_num}.")
+            print(f"Found 0 links on page {page_num}.")
 
     if all_data:
         with open(output_csv, "w", newline='', encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=["Page", "Transcript", "Date", "Link"])
+            writer = csv.DictWriter(f, fieldnames=["Page", "Transcript", "Date", "Link", "Type"])
             writer.writeheader()
             writer.writerows(all_data)
-        print(f"\nAll pages processed. Total {len(all_data)} transcripts saved to {output_csv}")
+        print(f"\nAll pages processed. Total {len(all_data)} links saved to {output_csv}")
     else:
-        print("\nNo transcripts found in the file.")
+        print("\nNo links found in the file.")
 
 def main():
     parser = argparse.ArgumentParser(description="AlphaStreet Transcripts Scraper")
