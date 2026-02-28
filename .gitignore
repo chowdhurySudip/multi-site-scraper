@@ -8,3 +8,9 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Data files
+transcripts_data/
+transcripts.csv
+webpage_content.txt
+progress.json
