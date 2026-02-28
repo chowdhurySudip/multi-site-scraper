@@ -14,3 +14,4 @@ transcripts_data/
 transcripts.csv
 webpage_content.txt
 progress.json
+*.zip
